@@ -1,0 +1,23 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+
+  audit:
+    build:
+      context: .
+      dockerfile: Dockerfile.audit
+    ports:
+      - "5000:5000"
+    restart: always
+
+  fluent-bit:
+    image: fluent/fluent-bit:2.1.8
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+    depends_on:
+      - audit
